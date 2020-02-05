@@ -117,9 +117,103 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"scripts/app.js":[function(require,module,exports) {
-// Let's go!
-},{}],"../../../../../usr/local/share/.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+})({"scripts/createStore.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var createStore = function createStore(reducer, initialState) {
+  // create a Store Object which contains everything
+  var store = {}; // create state 
+
+  store.state = initialState; // create listeners 
+
+  store.listeners = []; // Create getState Method
+
+  store.getState = function () {
+    return store.state;
+  }; // Create Subscribers
+
+
+  store.subscribe = function (listener) {
+    return store.listeners.push(listener);
+  }; // Create Dispatch Method
+
+
+  store.dispatch = function (action) {
+    store.state = reducer(store.state, action);
+    store.listeners.forEach(function (listener) {
+      return listener();
+    });
+  };
+
+  return store;
+};
+
+var _default = createStore;
+exports.default = _default;
+},{}],"scripts/reducer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Define our State
+var initialState = [{
+  'url': 'https://twitter.com',
+  'name': 'twitter',
+  'isFav': false,
+  'id': 'sldjflasjdf'
+}];
+
+var reducer = function reducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case 'ADD_BOOKMARKS':
+      return state.concat(action.payload);
+      break;
+
+    case 'REMOVE_BOOKMARKS':
+      return state.filter(function (bookmark) {
+        return bookmark.id !== action.payload;
+      });
+      break;
+
+    case 'TOGGLE_FAVOURITE':
+      return state.map(function (bookmark) {
+        if (bookmark.id === action.payload) {
+          bookmark.isFav != bookmark.isFav;
+        }
+
+        return bookmark;
+      });
+      break;
+
+    default:
+      return state;
+      break;
+  }
+};
+
+var _default = reducer;
+exports.default = _default;
+},{}],"scripts/app.js":[function(require,module,exports) {
+"use strict";
+
+var _createStore = _interopRequireDefault(require("./createStore"));
+
+var _reducer = _interopRequireDefault(require("./reducer"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var store = (0, _createStore.default)(_reducer.default);
+},{"./createStore":"scripts/createStore.js","./reducer":"scripts/reducer.js"}],"../../../../../usr/local/share/.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
