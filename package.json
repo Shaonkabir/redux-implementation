@@ -1,0 +1,11 @@
+{
+  "name": "redux-implementation",
+  "version": "1.0.0",
+  "description": "A Simple Redux Implementation following TwinkleCats [HM Nayem Vai]",
+  "main": "store.js",
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
+  "author": "Shaon Kabir",
+  "license": "MIT"
+}
