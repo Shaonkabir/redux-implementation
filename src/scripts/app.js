@@ -2,7 +2,7 @@ import createStore from './createStore'
 import reducer from './reducer'
 import createListItem from './createListItem'
 
-const store = createStore(reducer);
+export const store = createStore(reducer);
 
 
 window.onload = function() {
@@ -22,12 +22,46 @@ window.onload = function() {
 			
 			// create list-item passing our bookmark object
 			const li = createListItem({url, name, isFav, id})
-			allBookmarks.appendChild(li)
+			
+			// push into our store
+			store.dispatch({
+				type: 'ADD_BOOKMARKS',
+				payload: {
+					url, name, isFav, id
+				}
+			})
 
 			e.target.value = ''
 			
 		}
 	})
+
+
+	// subscribe for all bookmark list
+	store.subscribe(() => {
+		allBookmarks.innerHTML = null;
+
+		store.getState().map(bookmark => {
+			let li = createListItem(bookmark);
+
+			allBookmarks.appendChild(li);
+		})
+	})
+
+	// subscribe for favourite Bookmarks list
+	store.subscribe(() => {
+		favouriteBookmarks.innerHTML = null;
+
+		store.getState().map(bookmark => {
+
+			if(bookmark.isFav) {
+			let li = createListItem(bookmark);
+				favouriteBookmarks.appendChild(li);
+			}
+		})
+	})
+
+
 
 }
 

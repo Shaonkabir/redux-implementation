@@ -22,7 +22,7 @@ const reducer = (state = initialState, action) => {
 		case  'TOGGLE_FAVOURITE' : 
 			return state.map(bookmark => {
 				if(bookmark.id === action.payload) {
-					bookmark.isFav != bookmark.isFav
+					bookmark.isFav = !bookmark.isFav
 				}
 			return bookmark;
 			})

@@ -1,5 +1,5 @@
+import {store} from './app'
 
-// function which create a simple list item
 
 const createListItem = bookmark => {
 
@@ -27,12 +27,22 @@ const createListItem = bookmark => {
 	const i = document.createElement('i')
 	i.className = `${bookmark.isFav ? 'fas' : 'far'} fa-heart`
 	favIcon.appendChild(i)
-	
-	// TODO: Event listener will be added later
+	favIcon.onclick = function() {
+		store.dispatch({
+			type: 'TOGGLE_FAVOURITE',
+			payload: bookmark.id
+		})
+	}
 	
 	const deleteIcon = document.createElement('span')
 	deleteIcon.innerHTML = `<i class="fas fa-trash"></i>`
 	deleteIcon.className = 'mx-3'
+	deleteIcon.onclick = function() {
+		store.dispatch({
+			type: 'REMOVE_BOOKMARKS',
+			payload: bookmark.id
+		})
+	}
 	
 	iconContainer.appendChild(deleteIcon)
 	iconContainer.appendChild(favIcon)

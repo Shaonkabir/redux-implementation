@@ -188,7 +188,7 @@ var reducer = function reducer() {
     case 'TOGGLE_FAVOURITE':
       return state.map(function (bookmark) {
         if (bookmark.id === action.payload) {
-          bookmark.isFav != bookmark.isFav;
+          bookmark.isFav = !bookmark.isFav;
         }
 
         return bookmark;
@@ -211,7 +211,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-// function which create a simple list item
+var _app = require("./app");
+
 var createListItem = function createListItem(bookmark) {
   var li = document.createElement('li');
   li.className = 'list-group-item d-flex';
@@ -233,11 +234,26 @@ var createListItem = function createListItem(bookmark) {
   var favIcon = document.createElement('span');
   var i = document.createElement('i');
   i.className = "".concat(bookmark.isFav ? 'fas' : 'far', " fa-heart");
-  favIcon.appendChild(i); // TODO: Event listener will be added later
+  favIcon.appendChild(i);
+
+  favIcon.onclick = function () {
+    _app.store.dispatch({
+      type: 'TOGGLE_FAVOURITE',
+      payload: bookmark.id
+    });
+  };
 
   var deleteIcon = document.createElement('span');
   deleteIcon.innerHTML = "<i class=\"fas fa-trash\"></i>";
   deleteIcon.className = 'mx-3';
+
+  deleteIcon.onclick = function () {
+    _app.store.dispatch({
+      type: 'REMOVE_BOOKMARKS',
+      payload: bookmark.id
+    });
+  };
+
   iconContainer.appendChild(deleteIcon);
   iconContainer.appendChild(favIcon);
   li.appendChild(img);
@@ -248,8 +264,13 @@ var createListItem = function createListItem(bookmark) {
 
 var _default = createListItem;
 exports.default = _default;
-},{}],"scripts/app.js":[function(require,module,exports) {
+},{"./app":"scripts/app.js"}],"scripts/app.js":[function(require,module,exports) {
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.store = void 0;
 
 var _createStore = _interopRequireDefault(require("./createStore"));
 
@@ -260,6 +281,7 @@ var _createListItem = _interopRequireDefault(require("./createListItem"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var store = (0, _createStore.default)(_reducer.default);
+exports.store = store;
 
 window.onload = function () {
   // grab all needed elements
@@ -279,10 +301,37 @@ window.onload = function () {
         name: name,
         isFav: isFav,
         id: id
+      }); // push into our store
+
+      store.dispatch({
+        type: 'ADD_BOOKMARKS',
+        payload: {
+          url: url,
+          name: name,
+          isFav: isFav,
+          id: id
+        }
       });
-      allBookmarks.appendChild(li);
       e.target.value = '';
     }
+  }); // subscribe for all bookmark list
+
+  store.subscribe(function () {
+    allBookmarks.innerHTML = null;
+    store.getState().map(function (bookmark) {
+      var li = (0, _createListItem.default)(bookmark);
+      allBookmarks.appendChild(li);
+    });
+  }); // subscribe for favourite Bookmarks list
+
+  store.subscribe(function () {
+    favouriteBookmarks.innerHTML = null;
+    store.getState().map(function (bookmark) {
+      if (bookmark.isFav) {
+        var li = (0, _createListItem.default)(bookmark);
+        favouriteBookmarks.appendChild(li);
+      }
+    });
   });
 }; // grab the domain name from url
 
