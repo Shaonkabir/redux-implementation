@@ -292,22 +292,31 @@ if (localStorage.getItem('bookmarks')) {
 
 var store = (0, _createStore.default)(_reducer.default, init);
 exports.store = store;
-console.log(store);
 
 window.onload = function () {
   // grab all needed elements
   var inputField = document.querySelector('#urlInput');
   var favouriteBookmarks = document.querySelector('#favouriteBookmarks');
-  var allBookmarks = document.querySelector('#allBookmarks'); // render our bookmarks from localstroge
+  var allBookmarks = document.querySelector('#allBookmarks');
+  var favCount = document.querySelector('.favCount');
+  var allCount = document.querySelector('.allCount'); // render our bookmarks from localstroge
 
   if (store.getState().length > 0) {
     store.getState().map(function (bookmark) {
       var li = (0, _createListItem.default)(bookmark);
-      allBookmarks.appendChild(li); // check if favourite
+      allBookmarks.appendChild(li);
+      allCount.innerHTML = "( ".concat(store.getState().length, " )");
+    }); // check if favourite
 
+    store.getState().map(function (bookmark) {
       if (bookmark.isFav) {
         favouriteBookmarks.appendChild(li);
       }
+
+      var favouriteItem = store.getState().filter(function (bookmark) {
+        return bookmark.isFav;
+      });
+      favCount.innerHTML = "( ".concat(favouriteItem.length, " )");
     });
   }
 
@@ -319,12 +328,13 @@ window.onload = function () {
       var isFav = false;
       var id = create_UUID(); // create list-item passing our bookmark object
 
-      var li = (0, _createListItem.default)({
+      var _li = (0, _createListItem.default)({
         url: url,
         name: name,
         isFav: isFav,
         id: id
       }); // push into our store
+
 
       store.dispatch({
         type: 'ADD_BOOKMARKS',
@@ -352,10 +362,20 @@ window.onload = function () {
     favouriteBookmarks.innerHTML = null;
     store.getState().map(function (bookmark) {
       if (bookmark.isFav) {
-        var li = (0, _createListItem.default)(bookmark);
-        favouriteBookmarks.appendChild(li);
+        var _li2 = (0, _createListItem.default)(bookmark);
+
+        favouriteBookmarks.appendChild(_li2);
       }
     });
+  });
+  store.subscribe(function () {
+    var favouriteItem = store.getState().filter(function (bookmark) {
+      return bookmark.isFav;
+    });
+    favCount.innerHTML = "( ".concat(favouriteItem.length, " )");
+  });
+  store.subscribe(function () {
+    allCount.innerHTML = "( ".concat(store.getState().length, " )");
   });
 }; // grab the domain name from url
 

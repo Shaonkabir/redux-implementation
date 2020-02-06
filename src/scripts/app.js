@@ -11,27 +11,37 @@ if (localStorage.getItem('bookmarks')) {
 
 
 export const store = createStore(reducer, init);
-console.log(store)
 
 window.onload = function() {
 	// grab all needed elements
 	const inputField = document.querySelector('#urlInput')
 	const favouriteBookmarks = document.querySelector('#favouriteBookmarks');
 	const allBookmarks = document.querySelector('#allBookmarks');
-
+	const favCount = document.querySelector('.favCount');
+	const allCount = document.querySelector('.allCount');
 
 
 	// render our bookmarks from localstroge
 	if(store.getState().length >0 ) {
+
 		store.getState().map(bookmark => {
 			let li = createListItem(bookmark);
 			allBookmarks.appendChild(li);
+			allCount.innerHTML = `( ${store.getState().length} )`
+		})
 
-			// check if favourite
+
+
+		// check if favourite
+		store.getState().map(bookmark => {
 			if(bookmark.isFav) {
 				favouriteBookmarks.appendChild(li);
 			}
+
+			let favouriteItem = store.getState().filter(bookmark => bookmark.isFav)
+			favCount.innerHTML = `( ${favouriteItem.length} )`
 		})
+
 	}
 
 
@@ -85,8 +95,16 @@ window.onload = function() {
 			}
 		})
 	})
+	
 
-
+	store.subscribe(() => {
+		let favouriteItem = store.getState().filter(bookmark => bookmark.isFav)
+		favCount.innerHTML = `( ${favouriteItem.length} )`
+	})
+	
+	store.subscribe(() => {
+		allCount.innerHTML = `( ${store.getState().length} )`
+	})
 
 }
 
