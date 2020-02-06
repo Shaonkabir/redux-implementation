@@ -299,7 +299,8 @@ window.onload = function () {
   var favouriteBookmarks = document.querySelector('#favouriteBookmarks');
   var allBookmarks = document.querySelector('#allBookmarks');
   var favCount = document.querySelector('.favCount');
-  var allCount = document.querySelector('.allCount'); // render our bookmarks from localstroge
+  var allCount = document.querySelector('.allCount');
+  var alert = document.querySelector('.alert'); // render our bookmarks from localstroge
 
   if (store.getState().length > 0) {
     store.getState().map(function (bookmark) {
@@ -376,6 +377,14 @@ window.onload = function () {
   });
   store.subscribe(function () {
     allCount.innerHTML = "( ".concat(store.getState().length, " )");
+  }); // subscribe for alert
+
+  store.subscribe(function () {
+    if (store.getState().length > 0) {
+      alert.style.display = 'none';
+    } else {
+      alert.style.display = 'block';
+    }
   });
 }; // grab the domain name from url
 

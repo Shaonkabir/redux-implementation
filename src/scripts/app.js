@@ -19,7 +19,7 @@ window.onload = function() {
 	const allBookmarks = document.querySelector('#allBookmarks');
 	const favCount = document.querySelector('.favCount');
 	const allCount = document.querySelector('.allCount');
-
+	const alert = document.querySelector('.alert');
 
 	// render our bookmarks from localstroge
 	if(store.getState().length >0 ) {
@@ -41,7 +41,7 @@ window.onload = function() {
 			let favouriteItem = store.getState().filter(bookmark => bookmark.isFav)
 			favCount.innerHTML = `( ${favouriteItem.length} )`
 		})
-
+	
 	}
 
 
@@ -105,7 +105,15 @@ window.onload = function() {
 	store.subscribe(() => {
 		allCount.innerHTML = `( ${store.getState().length} )`
 	})
-
+	
+	// subscribe for alert
+	store.subscribe(() => {
+		if(store.getState().length >0) {
+			alert.style.display = 'none'
+		} else {
+			alert.style.display = 'block'
+		}
+	})
 }
 
 
