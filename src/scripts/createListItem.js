@@ -32,6 +32,7 @@ const createListItem = bookmark => {
 			type: 'TOGGLE_FAVOURITE',
 			payload: bookmark.id
 		})
+		localStorage.setItem('bookmarks', JSON.stringify(store.getState()))
 	}
 	
 	const deleteIcon = document.createElement('span')
@@ -42,6 +43,7 @@ const createListItem = bookmark => {
 			type: 'REMOVE_BOOKMARKS',
 			payload: bookmark.id
 		})
+		localStorage.setItem('bookmarks', JSON.stringify(store.getState()))
 	}
 	
 	iconContainer.appendChild(deleteIcon)

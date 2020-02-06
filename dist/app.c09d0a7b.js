@@ -241,6 +241,8 @@ var createListItem = function createListItem(bookmark) {
       type: 'TOGGLE_FAVOURITE',
       payload: bookmark.id
     });
+
+    localStorage.setItem('bookmarks', JSON.stringify(_app.store.getState()));
   };
 
   var deleteIcon = document.createElement('span');
@@ -252,6 +254,8 @@ var createListItem = function createListItem(bookmark) {
       type: 'REMOVE_BOOKMARKS',
       payload: bookmark.id
     });
+
+    localStorage.setItem('bookmarks', JSON.stringify(_app.store.getState()));
   };
 
   iconContainer.appendChild(deleteIcon);
@@ -280,14 +284,33 @@ var _createListItem = _interopRequireDefault(require("./createListItem"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var store = (0, _createStore.default)(_reducer.default);
+var init = [];
+
+if (localStorage.getItem('bookmarks')) {
+  init = JSON.parse(localStorage.getItem('bookmarks'));
+}
+
+var store = (0, _createStore.default)(_reducer.default, init);
 exports.store = store;
+console.log(store);
 
 window.onload = function () {
   // grab all needed elements
   var inputField = document.querySelector('#urlInput');
   var favouriteBookmarks = document.querySelector('#favouriteBookmarks');
-  var allBookmarks = document.querySelector('#allBookmarks');
+  var allBookmarks = document.querySelector('#allBookmarks'); // render our bookmarks from localstroge
+
+  if (store.getState().length > 0) {
+    store.getState().map(function (bookmark) {
+      var li = (0, _createListItem.default)(bookmark);
+      allBookmarks.appendChild(li); // check if favourite
+
+      if (bookmark.isFav) {
+        favouriteBookmarks.appendChild(li);
+      }
+    });
+  }
+
   inputField.addEventListener('keypress', function (e) {
     if (e.keyCode == 13) {
       // our desire bookmark object
@@ -313,6 +336,7 @@ window.onload = function () {
         }
       });
       e.target.value = '';
+      localStorage.setItem('bookmarks', JSON.stringify(store.getState()));
     }
   }); // subscribe for all bookmark list
 
