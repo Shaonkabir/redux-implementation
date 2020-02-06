@@ -33,10 +33,14 @@ const createListItem = bookmark => {
 	deleteIcon.innerHTML = `<i class="fas fa-trash"></i>`
 	deleteIcon.className = 'mx-3'
 	
+	iconContainer.appendChild(deleteIcon)
+	iconContainer.appendChild(favIcon)
 
-	iconContainer.append(deleteIcon, favIcon)
 
-	li.append(img, text)
+	li.appendChild(img)
+	li.appendChild(text)
+	li.appendChild(iconContainer)
+	
 
 
 	return li;

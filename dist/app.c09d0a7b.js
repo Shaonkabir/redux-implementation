@@ -203,6 +203,50 @@ var reducer = function reducer() {
 
 var _default = reducer;
 exports.default = _default;
+},{}],"scripts/createListItem.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+// function which create a simple list item
+var createListItem = function createListItem(bookmark) {
+  var li = document.createElement('li');
+  li.className = 'list-group-item d-flex';
+  var img = document.createElement('img');
+  img.src = "//logo.clearbit.com/".concat(bookmark.name);
+  img.alt = bookmark.name;
+  var text = document.createElement('p');
+  text.className = 'lead ml-4';
+  text.innerHTML = bookmark.name;
+  text.style.cursor = 'pointer';
+
+  text.onclick = function () {
+    window.open(bookmark.name, '_blank');
+  };
+
+  var iconContainer = document.createElement('div');
+  iconContainer.className = 'ml-auto';
+  var favIcon = document.createElement('span');
+  var i = document.createElement('i');
+  i.className = "".concat(bookmark.isFav ? 'fas' : 'far', " fa-heart");
+  favIcon.appendChild(i); // TODO: Event listener will be added later
+
+  var deleteIcon = document.createElement('span');
+  deleteIcon.innerHTML = "<i class=\"fas fa-trash\"></i>";
+  deleteIcon.className = 'mx-3';
+  iconContainer.appendChild(deleteIcon);
+  iconContainer.appendChild(favIcon);
+  li.appendChild(img);
+  li.appendChild(text);
+  li.appendChild(iconContainer);
+  return li;
+};
+
+var _default = createListItem;
+exports.default = _default;
 },{}],"scripts/app.js":[function(require,module,exports) {
 "use strict";
 
@@ -210,10 +254,53 @@ var _createStore = _interopRequireDefault(require("./createStore"));
 
 var _reducer = _interopRequireDefault(require("./reducer"));
 
+var _createListItem = _interopRequireDefault(require("./createListItem"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var store = (0, _createStore.default)(_reducer.default);
-},{"./createStore":"scripts/createStore.js","./reducer":"scripts/reducer.js"}],"../../../../../usr/local/share/.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+
+window.onload = function () {
+  // grab all needed elements
+  var inputField = document.querySelector('#urlInput');
+  var favouriteBookmarks = document.querySelector('#favouriteBookmarks');
+  var allBookmarks = document.querySelector('#allBookmarks');
+  inputField.addEventListener('keypress', function (e) {
+    if (e.keyCode == 13) {
+      // our desire bookmark object
+      var url = e.target.value;
+      var name = domainName(url);
+      var isFav = false;
+      var id = create_UUID(); // create list-item passing our bookmark object
+
+      var li = (0, _createListItem.default)({
+        url: url,
+        name: name,
+        isFav: isFav,
+        id: id
+      });
+      allBookmarks.appendChild(li);
+      e.target.value = '';
+    }
+  });
+}; // grab the domain name from url
+
+
+function domainName(url) {
+  return url.match(/:\/\/(.[^/)]+)/)[1];
+} // generate a unique id
+
+
+function create_UUID() {
+  var date = new Date().getTime();
+  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (date + Math.random() * 16) % 16 | 0;
+    date = Math.floor(date / 16);
+    return (c == 'x' ? r : r & 0 * 3 | 0 * 8).toString(16);
+  });
+  return uuid;
+}
+},{"./createStore":"scripts/createStore.js","./reducer":"scripts/reducer.js","./createListItem":"scripts/createListItem.js"}],"../../../../../usr/local/share/.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
