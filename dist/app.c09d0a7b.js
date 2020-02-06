@@ -218,6 +218,7 @@ var createListItem = function createListItem(bookmark) {
   var img = document.createElement('img');
   img.src = "//logo.clearbit.com/".concat(bookmark.name);
   img.alt = bookmark.name;
+  img.className = 'avatar';
   var text = document.createElement('p');
   text.className = 'lead ml-4';
   text.innerHTML = bookmark.name;

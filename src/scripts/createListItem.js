@@ -9,6 +9,7 @@ const createListItem = bookmark => {
 	const img = document.createElement('img')
 	img.src = `//logo.clearbit.com/${bookmark.name}`
 	img.alt = bookmark.name
+	img.className = 'avatar'
 
 	const text = document.createElement('p')
 	text.className = 'lead ml-4'

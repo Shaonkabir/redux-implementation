@@ -10,3 +10,14 @@ body {
 	line-height: 1.7;
 	font-family: 'Raleway', sans-serif;
 }
+
+.avatar {
+	width:30px;
+	height: 30px;
+	border-radius: 5px;
+	border: 1px solid grey;
+	margin:9px 0;
+}
+span {
+	cursor: pointer;
+}
